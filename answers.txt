@@ -1,0 +1,3 @@
+By looking at the total value in tempo, duration_ms, loudness
+Calculate the sum of tempo, duration_ms, loudness separately
+
