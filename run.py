@@ -14,11 +14,17 @@ def main():
             continue
         cursor : sqlite3.Cursor = connection.cursor()
 
+
         cursor.execute(sql_lines)
+        
+        headers : list = [header[0] for header in cursor.description]
         ans : list = cursor.fetchall()
+        ans = sort_fetch(ans, headers)
+        # print(ans)
 
         cursor.execute(target_sql_lines)
         target : list = cursor.fetchall()
+        target = sort_fetch(target, headers)
 
         if ans == target:
             print(f"{i}.sql is correct!:)")
@@ -27,6 +33,21 @@ def main():
         
 
     connection.close()
+
+def sort_fetch(table, header) -> list:
+        # turn all tuples into list
+        table = [list(result) for result in table]
+        # turn all other types into str
+        for row in range(len(table)):
+            for column in range(len(table[row])):
+                table[row][column] = str(table[row][column])
+        # print(table)
+        # print(header)
+        # sort them in other
+        for row in table:
+            row.sort(key= lambda header : header)
+        # print(table)
+        return table
 
 def decrypt(text : str) -> str:
     result : str = ""
