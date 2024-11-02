@@ -1,4 +1,6 @@
 import sqlite3
+from sys import argv
+from pandas import read_sql_query
 
 def main():
     connection : sqlite3.Connection = sqlite3.connect("songs.db")
@@ -24,13 +26,22 @@ def main():
 
         cursor.execute(target_sql_lines)
         target : list = cursor.fetchall()
-        target = sort_fetch(target, headers)
 
+        target = sort_fetch(target, headers)
         if ans == target:
             print(f"{i}.sql is correct!:)")
         else:
             print(f"{i}.sql is incorrect!:(")
-        
+
+        # arg[1] is enable compare, arg[2] is the exercise's name
+        if len(argv) > 1:
+            if (bool(argv[1]) == True and int(argv[2]) == i) or int(argv[2]) == 0:
+                print("ans:")
+                print(read_sql_query(sql_lines, connection))
+                print()
+                print("your ans:")
+                print(read_sql_query(target_sql_lines, connection))
+                # return
 
     connection.close()
 
@@ -41,8 +52,6 @@ def sort_fetch(table, header) -> list:
         for row in range(len(table)):
             for column in range(len(table[row])):
                 table[row][column] = str(table[row][column])
-        # print(table)
-        # print(header)
         # sort them in other
         for row in table:
             row.sort(key= lambda header : header)
